@@ -1,5 +1,7 @@
 import { useState } from "react";
+import axios from "axios";
 import "./App.css";
+
 
 const ListaDeTarefas = (props: any) => {
   return (
@@ -59,6 +61,28 @@ const App = () => {
   const escutarModificacaoTexto = (evento: any) => {
     setTarefa(evento.target.value);
   }
+  const escutarCliqueAcessarAPI = () => {
+    console.log("clicou");
+    // acesso a API HTTP 
+    axios.get("https://jsonplaceholder.typicode.com/todos").then((resposta) => {
+      // resposta http
+      console.log(resposta);
+      // dados json da resposta http
+      console.log(resposta.data);
+      // conversão dos dados http aos nossos dados da aplicação
+      const dados = resposta.data.map((item) => {
+        return {
+          id: item.id,
+          titulo: item.title,
+          concluido: item.completed
+        };
+      });
+      console.log(dados);
+      // atribuir valor final ao estado
+      setTarefas(dados);
+    });
+
+  }
 
   return (
     <div className="aplicacao">
@@ -67,6 +91,9 @@ const App = () => {
         <label htmlFor="tarefa">Informe a nova tarefa: </label>
         <input type="text" id="tarefa" value={tarefa} onChange={escutarModificacaoTexto} />
         <button onClick={escutarCliqueBotao}>Criar nova tarefa</button>
+      </div>
+      <div>
+        <button onClick={escutarCliqueAcessarAPI}>Acessar API</button>
       </div>
       <ListaDeTarefas dados={tarefas}/>
     </div>
